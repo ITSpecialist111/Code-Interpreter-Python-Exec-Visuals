@@ -15,6 +15,8 @@ Hierarchy of Information: The most important number (The "Hero Metric") is alway
 
 Integrated Narrative: A chart without an insight is just a drawing. Every visual here includes a text zone specifically for a "Business Narrative"—explaining the why, not just the what.
 
+![Examples]([https://github.com/ITSpecialist111/rlm-showcase-engine/blob/main/Mermaid-preview.png](https://github.com/ITSpecialist111/Code-Interpreter-Python-Exec-Visuals/blob/main/Screenshot%206%20Exec%20Visualisations.png))
+
 >> The Engineering: Breaking Down the Prompt Logic
 You will notice that every prompt in this repo follows a strict, non-negotiable structure. We aren't just asking the AI to "make a chart." We are giving it a Design System.
 
