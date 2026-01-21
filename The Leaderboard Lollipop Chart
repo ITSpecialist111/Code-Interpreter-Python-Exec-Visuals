@@ -1,57 +1,55 @@
 From this data  <Document input Here>
 
 Role: Performance Analyst
-Goal: Create a clean "Lollipop Chart" to rank top performers.
+Goal: Create a clean "Lollipop Chart" ranking.
 
 Data Extraction Protocol:
 
-Primary Method: Scan the PDF for a list of Regions, Products, or Channels and their Sales values. Look for a "Top 5" list.
+Primary Method: Extract Top 5 items and values.
 
-Fallback Method: If extraction fails, use this Hardcoded Demo Data:
+Fallback Method: Use Demo Data: ['Cloud Services', 'On-Premise', 'Consulting', 'Support', 'Training'] with values [85, 60, 45, 30, 15].
 
-Items: ['Cloud Services', 'On-Premise', 'Consulting', 'Support', 'Training']
-
-Values: [85, 60, 45, 30, 15] (Sorted High to Low).
-
-Step 1: The Canvas (Strict Layout)
+Step 1: The Canvas
 
 Initialize fig = plt.figure(figsize=(10, 6)).
 
-Create main axis ax_main = fig.add_axes([0,0,1,1]) and turn it off (axis('off')).
+Create ax_main covering [0,0,1,1] and turn it off.
 
-Draw the white card background with a thin grey border.
+Draw white card background.
 
-Step 2: The Chart Layer
+Step 2: The Chart Layer (Adjusted for Long Text)
 
-Create chart axis: ax_chart = fig.add_axes([0.25, 0.25, 0.7, 0.6]) (Shifted right to leave room for labels).
+Fix: Shift the chart axis to the right. Use ax_chart = fig.add_axes([0.35, 0.2, 0.6, 0.6]). (Left start at 0.35 gives 35% of the card width for text).
 
-Nuclear Clean-Up: ax_chart.axis('off'). No borders, no ticks, no grid.
+Turn off axis: ax_chart.axis('off').
 
-Step 3: Plotting (The "Lollipop" Logic)
+Step 3: Plotting
 
-The Stems: Draw horizontal lines for each item.
+Stems: ax_chart.hlines(y=range(len(items)), xmin=0, xmax=values, color='#E0E0E0', linewidth=3)
 
-ax_chart.hlines(y=range(len(items)), xmin=0, xmax=values, color='#E0E0E0', linewidth=3)
+Heads: ax_chart.scatter(values, range(len(items)), color='#0078D4', s=500, zorder=3) (Size increased to 500).
 
-The Heads: Draw circles at the end of each line.
+Step 4: Labels (The Fixes)
 
-ax_chart.scatter(values, range(len(items)), color='#0078D4', s=300, zorder=3) (Size 300 makes them big and bold).
+Category Names (Left):
 
-Step 4: The Labels (Precision Placement)
+Iterate through items. If text > 30 chars, truncate with "...".
 
-Category Names (Left): Place the item names (e.g., "Cloud Services") to the left of the start of the line.
+Place text at x=-2 (relative to chart axis).
 
-Use ax_chart.text(-5, i, item_name, ha='right', va='center', fontsize=12, color='grey').
+ax_chart.text(-2, i, short_name, ha='right', va='center', fontsize=11, color='grey').
 
-Values (Inside the Head): Place the number (e.g., "85") inside the blue circle.
+Values (Inside Head):
 
-Use ax_chart.text(value, i, str(value), ha='center', va='center', fontsize=10, color='white', weight='bold').
+Place value inside the dot.
 
-Step 5: Text Elements
+ax_chart.text(val, i, str(int(val)), ha='center', va='center', fontsize=9, color='white', weight='bold').
 
-Title (Top Left): ax_main.text(0.05, 0.90, "Top Revenue Streams (YTD)", Size 16, Bold).
+Step 5: Narrative
 
-Narrative (Bottom): ax_main.text(0.05, 0.10, "Insight: Cloud Services now creates 2x the revenue of any other stream.", Size 12).
+Title: "Top Revenue Streams" (Top Left).
+
+Narrative: "Insight: Cloud Services leads the portfolio." (Bottom).
 
 Final Output:
 Display the image.
