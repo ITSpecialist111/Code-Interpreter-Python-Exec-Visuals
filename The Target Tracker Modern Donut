@@ -1,0 +1,27 @@
+From this data  <Document input here>
+
+Role: Data Visualization Designer
+Goal: Create a "Donut Gauge" showing progress to target.
+
+Data Extraction Protocol:
+1. Try extracting "Revenue" vs "Target" from text.
+2. Fallback Data: Actual=7.5M, Target=10M (75% attainment).
+
+Step 1: Canvas
+- fig = plt.figure(figsize=(6, 6))
+- ax = fig.add_axes([0,0,1,1])
+- ax.axis('off')
+- ax.set_aspect('equal') # Crucial for circular shape
+
+Step 2: The Donut
+- Data: [Actual, (Target-Actual)]
+- Colors: [Brand Blue (#0078D4), Light Grey (#E0E0E0)]
+- Plot a Pie Chart with `startangle=90`, `counterclock=False`.
+- Draw a white circle at (0,0) with radius=0.7 to create the hole.
+
+Step 3: Text Layer (Centered)
+- Hero Number: Place "75%" at (0, 0) -> Center, Bold, Size 50, Brand Blue.
+- Label: Place "of Annual Target" at (0, -0.25) -> Center, Grey, Size 12.
+
+Step 4: Context
+- Bottom Text: "Insight: We are on track to exceed Q4 targets by 5%."
