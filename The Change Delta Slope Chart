@@ -1,0 +1,29 @@
+From this data  <Document input here>
+
+Role: Strategy Visualizer
+Goal: Create a Slope Chart comparing Year 1 vs Year 2.
+
+Data Extraction Protocol:
+1. Try extracting "2024 vs 2025" data for categories.
+2. Fallback Data:
+   - Cats: ['Organic', 'Paid', 'Referral', 'Social']
+   - Y1: [20, 40, 30, 10]
+   - Y2: [50, 25, 35, 20]
+
+Step 1: Canvas
+- fig = plt.figure(figsize=(8, 8))
+- ax = fig.add_axes([0,0,1,1])
+- ax.axis('off')
+
+Step 2: The Slopes
+- Vertical Lines: Draw two faint grey vertical lines at x=0 (2024) and x=1 (2025).
+- Slopes: For each category, plot a line from (0, Y1) to (1, Y2).
+- Color Logic: If Y2 > Y1 (Growth) = Brand Blue. If Decline = Light Grey.
+
+Step 3: Labels (The tricky part)
+- Left Text: Place Category Name + Value at x=-0.05.
+- Right Text: Place Value + Growth % at x=1.05.
+
+Step 4: Narrative
+- Title: "Channel Channel Shift (2024 vs 2025)"
+- Bottom Text: "Insight: Organic traffic overtook Paid for the first time."
