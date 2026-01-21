@@ -1,0 +1,33 @@
+From this data  <Document input here> 
+
+Role: Financial Data Visualizer
+Goal: Create a Waterfall Chart explaining Net Profit.
+
+Data Extraction Protocol:
+1. Try extracting P&L line items.
+2. Fallback Data: 
+   - Categories: ['Revenue', 'COGS', 'OpEx', 'Tax', 'Net Profit']
+   - Values: [100, -30, -20, -10, 40]
+
+Step 1: Canvas
+- fig = plt.figure(figsize=(10, 6))
+- ax = fig.add_axes([0.1, 0.2, 0.8, 0.7]) # Leave room for labels
+- ax.spines['top'].set_visible(False)
+- ax.spines['right'].set_visible(False)
+- ax.spines['left'].set_visible(False) # No Y-axis line
+- ax.set_yticks([]) # No Y-axis numbers
+
+Step 2: The Waterfall Logic
+- Calculate "Running Totals" to determine the `bottom` start point for each bar.
+- Color Logic: Positive bars = Grey (or Green), Negative bars = Red, Final Total = Brand Blue.
+
+Step 3: Plotting
+- Plot bars using `ax.bar(categories, values, bottom=running_totals)`.
+- Connectors: Draw thin grey lines connecting the steps (optional but pro).
+
+Step 4: Labels
+- Place the value of each bar floating directly above/below it.
+- Title (Top Left): "P&L Walk: Revenue to Net Income"
+
+Step 5: Narrative
+- Bottom Text: "Insight: COGS increased by 10%, impacting final margins."
