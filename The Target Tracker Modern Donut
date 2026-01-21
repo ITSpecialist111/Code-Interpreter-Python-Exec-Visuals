@@ -1,27 +1,60 @@
 From this data  <Document input here>
 
-Role: Data Visualization Designer
-Goal: Create a "Donut Gauge" showing progress to target.
+Role: Data Visualization Expert
+Goal: Create a clean "Donut Gauge" visual that shows progress toward a target, optimized for executive slides.
 
 Data Extraction Protocol:
-1. Try extracting "Revenue" vs "Target" from text.
-2. Fallback Data: Actual=7.5M, Target=10M (75% attainment).
 
-Step 1: Canvas
-- fig = plt.figure(figsize=(6, 6))
-- ax = fig.add_axes([0,0,1,1])
-- ax.axis('off')
-- ax.set_aspect('equal') # Crucial for circular shape
+Primary Method: Try extracting "Revenue" and "Annual Target" from the document using pypdf. Look for keywords like "Annual Goal," "Budget," or "FY Target."
 
-Step 2: The Donut
-- Data: [Actual, (Target-Actual)]
-- Colors: [Brand Blue (#0078D4), Light Grey (#E0E0E0)]
-- Plot a Pie Chart with `startangle=90`, `counterclock=False`.
-- Draw a white circle at (0,0) with radius=0.7 to create the hole.
+Fallback Method: If extraction fails or returns 0, use this Hardcoded Demo Data:
 
-Step 3: Text Layer (Centered)
-- Hero Number: Place "75%" at (0, 0) -> Center, Bold, Size 50, Brand Blue.
-- Label: Place "of Annual Target" at (0, -0.25) -> Center, Grey, Size 12.
+Actual = 7.5 (e.g., $7.5M)
 
-Step 4: Context
-- Bottom Text: "Insight: We are on track to exceed Q4 targets by 5%."
+Target = 10.0 (e.g., $10.0M)
+
+Attainment = 75%
+
+Step 1: The Canvas (Strict Layout)
+
+Initialize fig = plt.figure(figsize=(8, 5)).
+
+Create a main axis ax_main = fig.add_axes([0,0,1,1]) and immediately turn it off: ax_main.axis('off').
+
+Draw a white rectangle with a thin grey border to frame the card.
+
+Step 2: The Donut Chart (The "Visual Layer")
+
+Calculate: Pct = Actual / Target. If Pct > 1.0, cap it at 1.0 (100%) for the chart, but show the real number in text.
+
+Create Axis: ax_chart = fig.add_axes([0.45, 0.15, 0.5, 0.7]) (Right side of the card).
+
+Plotting:
+
+Data List: [Actual, Target - Actual]
+
+Colors: ['#0078D4', '#E0E0E0'] (Brand Blue for progress, Light Grey for remaining).
+
+Use ax_chart.pie(data, startangle=90, counterclock=False, wedgeprops={'width':0.3}). Note: width=0.3 creates the "donut hole" automatically.
+
+Step 3: The Text Layer (Left Zone)
+
+Place text using ax_main.text() relative to the canvas (0-1).
+
+Title: x=0.08, y=0.85, Text: "Annual Revenue Goal", Size 14, Grey.
+
+Hero Percentage: x=0.08, y=0.65, Text: "75%", Size 80, Bold, Brand Blue #0078D4.
+
+Sub-Metric: x=0.08, y=0.50, Text: "$7.5M of $10.0M Target", Size 14, Bold.
+
+Step 4: The Narrative (Bottom Zone)
+
+x=0.08, y=0.15.
+
+Text: "Insight: We are currently tracking 5% ahead of the Q3 forecast pace."
+
+Step 5: Final Polish
+
+Ensure no axis lines or box borders are visible around the pie chart.
+
+Display the image.
