@@ -1,0 +1,27 @@
+From this data  <Document input Here>
+
+Role: Performance Analyst
+Goal: Create a Horizontal Lollipop Chart for ranking.
+
+Data Extraction Protocol:
+1. Try extracting Top 5 Products/Regions.
+2. Fallback Data: 
+   - Items: ['Cloud', 'On-Prem', 'Consulting', 'Support', 'Training']
+   - Values: [85, 60, 45, 30, 15]
+
+Step 1: Canvas
+- fig = plt.figure(figsize=(10, 6))
+- ax = fig.add_axes([0.2, 0.1, 0.75, 0.8])
+- Remove all spines and x/y ticks.
+
+Step 2: The Lollipop
+- Plot Stems: `plt.hlines(y=items, xmin=0, xmax=values, color='grey', alpha=0.5)`
+- Plot Heads: `plt.scatter(values, items, color='#0078D4', s=200)` (Big Blue Dots)
+
+Step 3: Text Labels
+- Item Labels: Place text (e.g., "Cloud") to the left of the line.
+- Value Labels: Place text (e.g., "$85M") *inside* or *just right* of the blue dot.
+
+Step 4: Narrative
+- Title: "Top Performing Revenue Streams"
+- Bottom Text: "Insight: Cloud services now account for 40% of total mix."
