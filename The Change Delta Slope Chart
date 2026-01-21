@@ -1,29 +1,63 @@
 From this data  <Document input here>
 
 Role: Strategy Visualizer
-Goal: Create a Slope Chart comparing Year 1 vs Year 2.
+Goal: Create a clean "Slope Chart" comparing two periods.
 
 Data Extraction Protocol:
-1. Try extracting "2024 vs 2025" data for categories.
-2. Fallback Data:
-   - Cats: ['Organic', 'Paid', 'Referral', 'Social']
-   - Y1: [20, 40, 30, 10]
-   - Y2: [50, 25, 35, 20]
 
-Step 1: Canvas
-- fig = plt.figure(figsize=(8, 8))
-- ax = fig.add_axes([0,0,1,1])
-- ax.axis('off')
+Primary Method: Scan PDF for "Year over Year" or "2024 vs 2025" comparisons across categories.
 
-Step 2: The Slopes
-- Vertical Lines: Draw two faint grey vertical lines at x=0 (2024) and x=1 (2025).
-- Slopes: For each category, plot a line from (0, Y1) to (1, Y2).
-- Color Logic: If Y2 > Y1 (Growth) = Brand Blue. If Decline = Light Grey.
+Fallback Method: Use Demo Data:
 
-Step 3: Labels (The tricky part)
-- Left Text: Place Category Name + Value at x=-0.05.
-- Right Text: Place Value + Growth % at x=1.05.
+Categories: ['Organic', 'Paid Search', 'Referral', 'Social']
 
-Step 4: Narrative
-- Title: "Channel Channel Shift (2024 vs 2025)"
-- Bottom Text: "Insight: Organic traffic overtook Paid for the first time."
+Start Values: [20, 40, 30, 10]
+
+End Values: [50, 25, 35, 20]
+
+Step 1: The Canvas
+
+Initialize fig = plt.figure(figsize=(10, 6)).
+
+Create ax_main covering [0,0,1,1] and turn it off.
+
+Draw white card background.
+
+Step 2: The Chart Layer (Centered)
+
+Create axis: ax_chart = fig.add_axes([0.2, 0.2, 0.6, 0.6]) (Leaves 20% margin on both sides).
+
+Nuclear Clean-Up: ax_chart.axis('off').
+
+Vertical Anchors: Draw two thin grey vertical lines at x=0 and x=1 to represent the two time periods.
+
+Step 3: Plotting (The Slopes)
+
+Loop through each category.
+
+Color Logic: If End > Start (Growth) use Brand Blue (#0078D4). If End < Start (Decline) use Light Grey (#E0E0E0).
+
+Lines: Plot line from (0, start_val) to (1, end_val) with linewidth=3, marker='o'.
+
+Step 4: Labels (The "Gutter" Strategy)
+
+Left Side (Start):
+
+Place text at x=-0.05.
+
+ax_chart.text(-0.05, start_val, f"{cat} {start_val}%", ha='right', va='center', fontsize=11, color='grey').
+
+Right Side (End):
+
+Place text at x=1.05.
+
+ax_chart.text(1.05, end_val, f"{end_val}%", ha='left', va='center', fontsize=11, weight='bold', color='black').
+
+Step 5: Text Elements
+
+Title (Top Left): ax_main.text(0.05, 0.90, "Channel Mix Shift (Year 1 vs Year 2)", Size 16, Bold).
+
+Narrative (Bottom): ax_main.text(0.05, 0.10, "Insight: Organic traffic overtook Paid Search as the primary driver.", Size 12).
+
+Final Output:
+Display the image.
