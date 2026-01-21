@@ -1,7 +1,7 @@
 From this data  <Document input Here>
 
 Role: Performance Analyst
-Goal: Create a clean "Lollipop Chart" ranking.
+Goal: Create a "Lollipop Chart" with ample space for long labels.
 
 Data Extraction Protocol:
 
@@ -17,9 +17,9 @@ Create ax_main covering [0,0,1,1] and turn it off.
 
 Draw white card background.
 
-Step 2: The Chart Layer (Adjusted for Long Text)
+Step 2: The Chart Layer (Aggressive Shift)
 
-Fix: Shift the chart axis to the right. Use ax_chart = fig.add_axes([0.35, 0.2, 0.6, 0.6]). (Left start at 0.35 gives 35% of the card width for text).
+Fix 1: Shift the chart axis WAY to the right. Use ax_chart = fig.add_axes([0.45, 0.2, 0.5, 0.6]). (Start at 45% width).
 
 Turn off axis: ax_chart.axis('off').
 
@@ -27,13 +27,13 @@ Step 3: Plotting
 
 Stems: ax_chart.hlines(y=range(len(items)), xmin=0, xmax=values, color='#E0E0E0', linewidth=3)
 
-Heads: ax_chart.scatter(values, range(len(items)), color='#0078D4', s=500, zorder=3) (Size increased to 500).
+Heads (Fix 2): ax_chart.scatter(values, range(len(items)), color='#0078D4', s=800, zorder=3) (Size increased to 800).
 
-Step 4: Labels (The Fixes)
+Step 4: Labels (The Safe Zone)
 
 Category Names (Left):
 
-Iterate through items. If text > 30 chars, truncate with "...".
+Truncate text at 40 characters.
 
 Place text at x=-2 (relative to chart axis).
 
@@ -41,9 +41,7 @@ ax_chart.text(-2, i, short_name, ha='right', va='center', fontsize=11, color='gr
 
 Values (Inside Head):
 
-Place value inside the dot.
-
-ax_chart.text(val, i, str(int(val)), ha='center', va='center', fontsize=9, color='white', weight='bold').
+ax_chart.text(val, i, str(int(val)), ha='center', va='center', fontsize=10, color='white', weight='bold').
 
 Step 5: Narrative
 
@@ -53,3 +51,4 @@ Narrative: "Insight: Cloud Services leads the portfolio." (Bottom).
 
 Final Output:
 Display the image.
+
