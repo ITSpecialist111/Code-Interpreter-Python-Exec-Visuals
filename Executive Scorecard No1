@@ -1,0 +1,49 @@
+From this data  <Document input>   # <------ you need to add the input in 'Prompt' tool in Copilot Studio. 
+
+Role: Data Visualization Expert
+Goal: Create a high-fidelity replica of the "Executive Scorecard" design shown in the attached reference.
+​
+Data Extraction Protocol:
+Try extracting text using pypdf.
+Fallback: If text length is 0, use pdfplumber (which handles tables better).
+Final Fallback: If extraction fails, use this Hardcoded Demo Data so the visualization code can still be tested:
+Data = [12, 10, 18, 12, 15, 13, 20, 25]
+Hero Number = 25
+Comparison = +5 vs prior
+
+
+
+Step 1: Data Preparation
+Data Slicing: Extract the last 8 numeric values from the provided dataset.
+Hero Metric: The last value is the "Hero Number."
+Comparison: Calculate the variance vs the previous period.
+"Filter Logic: Remove any values greater than 200 (to exclude totals/outliers). Only plot values between 0 and 200."
+
+Step 2: The Side-by-Side Canvas
+Initialize fig = plt.figure(figsize=(10, 5)). Use ax_main = fig.add_axes([0,0,1,1]) and turn it off.
+Draw a white rectangle with a thin grey border to act as the "Card" background.
+
+Step 3: The Left Zone (Text)
+Place these using ax_main.text() at left-aligned coordinates:
+Metric Name: (e.g., "QTD Sales") at x=0.08, y=0.85, Size 16, Bold.
+Hero Number: (e.g., "$25M") at x=0.08, y=0.70, Size 60, Bold, Brand Blue (#0078D4).
+Comparison: (e.g., "▲ $5M (25%) QoQ") at x=0.08, y=0.55, Size 14, Bold.
+
+Step 4: The Right Zone (Bar Chart)
+Create a chart axis: ax_chart = fig.add_axes([0.45, 0.45, 0.5, 0.45]).
+DISABLE AXIS: ax_chart.axis('off').
+
+Plotting:
+Plot the first 7 bars in Light Grey.
+Plot the 8th (last) bar in Brand Blue.
+In-Chart Labels: Add the value of each bar directly above it in a small grey font.
+Constraint: Ensure the bars are relatively thin with clean spacing.
+
+Step 5: The Bottom Zone (Narrative)
+Place at x=0.08, y=0.15.
+Text: A 2-sentence summary starting with "By strategically prioritizing..." that explains the growth. Use a clean sans-serif font, Size 14.
+
+Filter logic: Remove any values greater than 1900 (to exclude years). Plot only the remaining metric scores."
+
+Final Output:
+Display the image.
