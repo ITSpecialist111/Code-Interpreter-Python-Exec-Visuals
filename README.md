@@ -79,3 +79,192 @@ Copy/Paste the full prompt from the specific file in this repo.
 Watch the python magic happen.
 
 - Graham
+
+P.S - Before you jump in, you'll need some instructions. As of today (Jan 2026) isn't not possible to create a simple Tool in Copilot Studio and it 'just work', the outputs are in an array that Copilot Studio can't split itself, you'll need to create the Prompt tool (Code Interpreter), then build a flow with it in, then call this flow in Copilot Studio with an adative card so the chat can render it! - it's a lot of steps! Here you go:
+
+# How to Render Python Visualizations in Copilot Studio (No Code Dumps)
+
+This guide outlines how to build a Copilot Studio agent that uses Python (Code Interpreter) to generate a custom data visualization and display it cleanly using an Adaptive Card.
+
+It solves two common problems:
+
+1. **The "File Save" Crash**: Prevents the flow from failing when trying to save images to a non-existent file system.
+
+2. **The "Base64 Wall of Text"**: Prevents the agent from dumping raw image code into the chat window.
+
+## Architecture Overview
+
+1. **AI Builder Prompt**: Generates the Python code to create a chart and forces a specific JSON output.
+
+2. **Power Automate Flow**: Executes the prompt, parses the hidden JSON, and extracts the raw Base64 string.
+
+3. **Copilot Studio Action**: Calls the flow and strictly maps the output to a variable (silencing the chat).
+
+4. **Adaptive Card**: Renders the final image using the Base64 variable.
+
+## Step 1: Create the Prompt Tool (AI Builder)
+
+This prompt instructs the Code Interpreter to generate a visualization but not save it as a file. Instead, it buffers the image and returns it as a JSON object.
+
+1. Go to **AI Builder > Prompts**.
+
+2. Create a new prompt using **Code Interpreter** (or "Document/Image processing").
+
+3. **Input**: Text Input.
+
+4. **Prompt Text**: Copy the following exactly.
+
+**Note**: The "Final Output" section is critical. It overrides the default behavior of saving files and printing markdown.
+```plaintext
+From this data: [[Text input]]
+
+Role: Data Visualization Expert
+Goal: Create a high-fidelity replica of the "Executive Scorecard" design shown in the attached reference.
+
+Data Extraction Protocol:
+Try extracting text using pypdf.
+Fallback: If text length is 0, use pdfplumber (which handles tables better).
+Final Fallback: If extraction fails, use this Hardcoded Demo Data so the visualization code can still be tested:
+Data = [12, 10, 18, 12, 15, 13, 20, 25]
+Hero Number = 25
+Comparison = +5 vs prior
+
+Step 1: Data Preparation
+Data Slicing: Extract the last 8 numeric values from the provided dataset.
+Hero Metric: The last value is the "Hero Number."
+Comparison: Calculate the variance vs the previous period.
+Filter Logic: Remove any values greater than 200 (to exclude totals/outliers). Only plot values between 0 and 200.
+
+Step 2: The Side-by-Side Canvas
+Initialize fig = plt.figure(figsize=(10, 5)). Use ax_main = fig.add_axes([0,0,1,1]) and turn it off.
+Draw a white rectangle with a thin grey border to act as the "Card" background.
+
+Step 3: The Left Zone (Text)
+Place these using ax_main.text() at left-aligned coordinates:
+Metric Name: (e.g., "QTD Sales") at x=0.08, y=0.85, Size 16, Bold.
+Hero Number: (e.g., "$25M") at x=0.08, y=0.70, Size 60, Bold, Brand Blue (#0078D4).
+Comparison: (e.g., "▲ $5M (25%) QoQ") at x=0.08, y=0.55, Size 14, Bold.
+
+Step 4: The Right Zone (Bar Chart)
+Create a chart axis: ax_chart = fig.add_axes([0.45, 0.45, 0.5, 0.45]).
+DISABLE AXIS: ax_chart.axis('off').
+Plotting:
+Plot the first 7 bars in Light Grey.
+Plot the 8th (last) bar in Brand Blue.
+In-Chart Labels: Add the value of each bar directly above it in a small grey font.
+Constraint: Ensure the bars are relatively thin with clean spacing.
+
+Step 5: The Bottom Zone (Narrative)
+Place at x=0.08, y=0.15.
+Text: A 2-sentence summary starting with "By strategically prioritizing..." that explains the growth. Use a clean sans-serif font, Size 14.
+
+Final Output:
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 
+1. Save the figure to a io.BytesIO buffer. 
+2. Encode that buffer to a Base64 string. 
+3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. 
+Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text.
+```
+
+## Step 2: Build the Agent Flow (Power Automate)
+
+This flow acts as the bridge. It runs the Python code and extracts the clean image string.
+
+1. **Trigger**: When an agent calls the flow
+
+2. **Input**: Text (Name it `InputText` or similar).
+
+3. **Action**: Run a prompt (AI Builder)
+   - Select the prompt created in Step 1.
+   - Pass the flow trigger input into the prompt input.
+
+4. **Action**: Parse JSON
+   - **Content**: Select `predictionOutput > text` from the "Run a prompt" step.
+   - **Schema**: Use the schema below. (This ensures we catch the filename correctly).
+```json
+{
+    "type": "object",
+    "properties": {
+        "files": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "filename": { "type": "string" },
+                    "content_type": { "type": "string" },
+                    "base64_content": { "type": "string" }
+                },
+                "required": [
+                    "filename",
+                    "content_type",
+                    "base64_content"
+                ]
+            }
+        }
+    }
+}
+```
+
+5. **Action**: Respond to the agent
+   - **Output Name**: `image` (Text type).
+   - **Value**: Use this expression to grab the string from the array:
+```
+first(body('Parse_JSON')?['files'])?['base64_content']
+```
+
+## Step 3: Configure Copilot Studio (The "Silence" Fix)
+
+This step prevents the bot from accidentally dumping the Base64 string into the chat window.
+
+1. Open your **Topic**.
+
+2. Add a **"Call an action"** node and select your Flow.
+
+3. **Configure Output Settings** (Crucial):
+   - In the Action properties, look for **Output Mode** (or "Respond to user").
+   - Change it from **All** (or "Respond automatically") to **Specific Variable** (or **Variable**).
+
+4. **Map the Output**:
+   - **Flow Output**: `image`
+   - **Copilot Variable**: `Topic.Output.image`
+
+This configuration forces the bot to store the data silently instead of printing it.
+
+## Step 4: The Adaptive Card
+
+Finally, display the image cleanly.
+
+1. In your Topic, add a **"Send a message"** node.
+
+2. Select **Adaptive Card**.
+
+3. Choose **Formula** (or **Edit JSON**) and paste the following. Note the concatenation (`&`) that combines the data prefix with your variable.
+```json
+{
+  type: "AdaptiveCard",
+  '$schema': "http://adaptivecards.io/schemas/adaptive-card.json",
+  version: "1.5",
+  body: [
+    {
+      type: "TextBlock",
+      text: "Executive Summary",
+      weight: "Bolder",
+      size: "Medium"
+    },
+    {
+      type: "Image",
+      url: "data:image/png;base64," & Topic.Output.image,
+      size: "Large",
+      altText: "Executive Scorecard"
+    }
+  ]
+}
+```
+
+## Final Result
+
+1. The Agent runs the Python code.
+2. The Python code buffers the image to memory (no file errors).
+3. The Flow extracts the Base64 string.
+4. Copilot Studio receives the string silently.
+5. The Adaptive Card renders the visualization perfectly.
