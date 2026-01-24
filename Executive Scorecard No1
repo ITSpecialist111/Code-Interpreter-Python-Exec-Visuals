@@ -1,4 +1,4 @@
-From this data  <Document input>   # <------ you need to add the input in 'Prompt' tool in Copilot Studio. 
+From this data   Text input 
 
 Role: Data Visualization Expert
 Goal: Create a high-fidelity replica of the "Executive Scorecard" design shown in the attached reference.
@@ -43,7 +43,8 @@ Step 5: The Bottom Zone (Narrative)
 Place at x=0.08, y=0.15.
 Text: A 2-sentence summary starting with "By strategically prioritizing..." that explains the growth. Use a clean sans-serif font, Size 14.
 
-Filter logic: Remove any values greater than 1900 (to exclude years). Plot only the remaining metric scores."
+Plot only the remaining metric scores."
+
 
 Final Output:
-Display the image.
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 1. Save the figure to a io.BytesIO buffer. 2. Encode that buffer to a Base64 string. 3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text."
