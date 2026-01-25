@@ -6,18 +6,19 @@ Goal: Create a high-fidelity replica of the "Executive Scorecard" design shown i
 Data Extraction Protocol:
 Try extracting text using pypdf.
 Fallback: If text length is 0, use pdfplumber (which handles tables better).
-Final Fallback: If extraction fails, use this Hardcoded Demo Data so the visualization code can still be tested:
-Data = [12, 10, 18, 12, 15, 13, 20, 25]
-Hero Number = 25
-Comparison = +5 vs prior
-
 
 
 Step 1: Data Preparation
-Data Slicing: Extract the last 8 numeric values from the provided dataset.
-Hero Metric: The last value is the "Hero Number."
-Comparison: Calculate the variance vs the previous period.
-"Filter Logic: Remove any values greater than 200 (to exclude totals/outliers). Only plot values between 0 and 200."
+1. Extraction: Extract all numeric values from the text using regex.
+2. Filter Logic: Remove values typically associated with years (e.g., 1990-2030) unless clearly contextually relevant. Keep all other metric values. Do NOT filter out values above 200.
+3. Data Handling (CRITICAL): 
+   - If 0 numbers are found, use the Hardcoded Demo Data as a last resort.
+   - If 1 to 7 numbers are found, USE THEM. Do not fallback. Plot these specific values on the chart.
+   - If 8 or more numbers are found, slice the list to keep the last 8.
+4. Hero Metrics:
+   - Hero Number = The very last value in the final data list.
+   - Previous Value = The second-to-last value (if available), otherwise use the Hero Number.
+   - Comparison = Hero Number - Previous Value.
 
 Step 2: The Side-by-Side Canvas
 Initialize fig = plt.figure(figsize=(10, 5)). Use ax_main = fig.add_axes([0,0,1,1]) and turn it off.
