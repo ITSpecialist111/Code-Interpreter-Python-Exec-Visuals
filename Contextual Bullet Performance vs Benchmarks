@@ -1,0 +1,48 @@
+From this data: [[Text input]]
+
+Role: Operations Visualizer
+Goal: Create a "Bullet Chart" to show performance against multiple benchmarks.
+
+Data Extraction Protocol:
+Primary Method: Extract Metric, Actual, Target, and Ranges (Low/Med/High).
+Fallback Method: Use Hardcoded Demo Data:
+Metric = "Customer Satisfaction (CSAT)"
+Actual = 85
+Target = 80
+Ranges = [0, 60, 75, 100] (Poor, Avg, Great)
+
+Step 1: The Canvas
+Initialize fig = plt.figure(figsize=(10, 4)).
+Create ax_main covering [0,0,1,1], turn off.
+Draw white card background.
+
+Step 2: The Chart Layer
+Create axis: ax_chart = fig.add_axes([0.1, 0.4, 0.8, 0.3]).
+Turn off axis: ax_chart.axis('off').
+
+Step 3: Plotting (Layered Bars)
+1. Background Ranges (The Context):
+   Plot 3 bars of full height.
+   Bar 1 (0-60): Color #EEEEEE (Lightest Grey)
+   Bar 2 (0-75): Color #D0D0D0 (Med Grey) - Note: Plot larger ranges first or manage zorder.
+   *Correct Approach*: Plot the full width (0-100) as base, then overlay smaller ranges if needed, OR plot segments.
+   Standard Bullet: 0-60 (Dark Grey), 60-75 (Med Grey), 75-100 (Light Grey).
+2. The Actual Bar (The Hero):
+   Plot a thinner bar (height=0.4) from 0 to Actual (85). Color: Brand Blue (#0078D4). Centered vertically.
+3. The Target Marker:
+   Plot a vertical line (vlines) at Target (80). Color: Black, linewidth=3.
+
+Step 4: Labels
+Title (Top Left): "CSAT Performance"
+Scale Labels: Place text "0", "60", "75", "100" below the bar.
+Hero Label: Place "85" (Actual) in Bold Blue to the right of the bar.
+
+Step 5: Narrative
+Bottom: "Insight: We have exceeded the target and entered the 'Great' performance zone."
+
+Final Output:
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 
+1. Save the figure to a io.BytesIO buffer. 
+2. Encode that buffer to a Base64 string. 
+3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. 
+Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text.
