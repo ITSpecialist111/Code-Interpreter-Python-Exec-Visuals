@@ -1,0 +1,48 @@
+From this data: [[Text input]]
+
+Role: Demographics Data Visualizer
+Goal: Create a "Waffle Chart" (10x10 grid) to visualize a percentage density.
+
+Data Extraction Protocol:
+Primary Method: Scan text/tables for a specific percentage share (e.g., "Market Share," "User Churn," "Adoption Rate").
+Fallback Method: If extraction fails, use this Hardcoded Demo Data:
+Metric Name = "Mobile Adoption"
+Value = 23 (representing 23%)
+
+Step 1: The Canvas
+Initialize fig = plt.figure(figsize=(8, 6)).
+Create ax_main = fig.add_axes([0,0,1,1]) and turn it off (axis('off')).
+Draw a white rectangle with a thin grey border to act as the "Card" background.
+
+Step 2: The Grid Calculation
+Total dots = 100 (10x10 grid).
+Target Count = The extracted integer value (e.g., 23).
+Grid Logic: Generate x and y coordinates for 100 points.
+x = [i % 10 for i in range(100)]
+y = [i // 10 for i in range(100)]
+# Important: This fills from bottom-left to top-right.
+
+Step 3: The Chart Layer
+Create axis: ax_chart = fig.add_axes([0.45, 0.2, 0.5, 0.6]) (Right side).
+Turn off axis: ax_chart.axis('off').
+Plotting:
+Loop through all 100 dots.
+Color Logic: If index < Target Count, use Brand Blue (#0078D4). Else, use Light Grey (#E0E0E0).
+Plot: ax_chart.scatter(x, y, c=colors, s=150, marker='s') (Use 's' for square markers).
+
+Step 4: Text Elements (Left Zone)
+Place using ax_main.text().
+Title: (e.g., "Mobile Adoption") at x=0.08, y=0.85, Size 14, Bold.
+Hero Metric: (e.g., "23%") at x=0.08, y=0.65, Size 80, Bold, Brand Blue.
+Subtitle: "of total user base" at x=0.08, y=0.50, Size 14, Grey.
+
+Step 5: Narrative (Bottom Zone)
+x=0.08, y=0.15.
+Text: "Insight: Mobile usage has doubled since the Q2 update." (Size 12).
+
+Final Output:
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 
+1. Save the figure to a io.BytesIO buffer. 
+2. Encode that buffer to a Base64 string. 
+3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. 
+Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text.
