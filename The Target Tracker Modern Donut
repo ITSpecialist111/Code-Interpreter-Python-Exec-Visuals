@@ -57,4 +57,4 @@ Step 5: Final Polish
 
 Ensure no axis lines or box borders are visible around the pie chart.
 
-Display the image.
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 1. Save the figure to a io.BytesIO buffer. 2. Encode that buffer to a Base64 string. 3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text."
