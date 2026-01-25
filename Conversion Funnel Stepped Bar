@@ -1,0 +1,47 @@
+From this data: [[Text input]]
+
+Role: Funnel Analyst
+Goal: Create a "Centered Funnel Chart" showing drop-off between stages.
+
+Data Extraction Protocol:
+Primary Method: Extract stages and volumes.
+Fallback Method: Use Hardcoded Demo Data:
+Stages = ['Impressions', 'Clicks', 'Signups', 'Purchases']
+Values = [1000, 400, 100, 25]
+
+Step 1: The Canvas
+Initialize fig = plt.figure(figsize=(10, 6)).
+Create ax_main covering [0,0,1,1], turn off.
+Draw white card background.
+
+Step 2: The Chart Layer
+Create axis: ax_chart = fig.add_axes([0.2, 0.2, 0.6, 0.6]).
+Turn off axis: ax_chart.axis('off').
+
+Step 3: Calculation (Centering)
+Max Value = 1000.
+For each bar, calculate 'left' padding to center it:
+left_pos = (Max Value - Value) / 2.
+
+Step 4: Plotting
+Loop through stages (top to bottom).
+Bar: ax_chart.barh(y=i, width=Value, left=left_pos, color=Brand Blue (#0078D4) if i==0 else '#80B0E0').
+Note: Fade colors as you go down (optional) or keep uniform.
+Spacing: Add white gaps between bars.
+
+Step 5: Labels
+Inside Bar: Place Value text in center of each bar (Color: White).
+Outside Left: Place Stage Name at (left_pos - offset).
+Conversion Rates (The "Floating" Insight):
+Calculate % of previous step. Place text in the white space between bars on the right side.
+
+Step 6: Text Elements
+Title: "Marketing Conversion Funnel"
+Narrative: "Insight: Major drop-off observed between Clicks and Signups."
+
+Final Output:
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 
+1. Save the figure to a io.BytesIO buffer. 
+2. Encode that buffer to a Base64 string. 
+3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. 
+Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text.
