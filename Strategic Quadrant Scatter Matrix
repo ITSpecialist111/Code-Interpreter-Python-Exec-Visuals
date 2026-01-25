@@ -1,0 +1,46 @@
+From this data: [[Text input]]
+
+Role: Portfolio Strategist
+Goal: Create a clean "2x2 Matrix" focusing on the top strategic items.
+
+Data Extraction Protocol:
+Primary Method: Extract items with two numeric scores (x, y).
+Fallback Method: Use Hardcoded Demo Data:
+Items = ['Project A', 'Project B', 'Project C', 'Project D']
+Impact (Y) = [9, 8, 4, 2]
+Effort (X) = [2, 8, 3, 9]
+Limits: Scale is 0-10.
+
+Step 1: The Canvas
+Initialize fig = plt.figure(figsize=(8, 8)).
+Create ax_main = fig.add_axes([0,0,1,1]) and turn it off.
+Draw white card background.
+
+Step 2: The Chart Layer
+Create axis: ax_chart = fig.add_axes([0.15, 0.2, 0.75, 0.7]).
+Turn off axis: ax_chart.axis('off').
+
+Step 3: The Matrix Grid
+Draw Crosshairs:
+Vertical line at x=5 (Midpoint). Color='#E0E0E0', linestyle='--'.
+Horizontal line at y=5 (Midpoint). Color='#E0E0E0', linestyle='--'.
+Quadrant Labels (Faint text in corners):
+Top-Right: "Quick Wins"
+Top-Left: "Strategic Bets"
+
+Step 4: Plotting
+Plot scatter points for each item.
+Color Logic: If Y>5 and X<5 (High Impact, Low Effort), use Brand Blue (#0078D4). All others Grey.
+Size: 400.
+
+Step 5: Labels
+Directly label points: ax_chart.text(x+0.2, y, item_name, fontsize=10).
+Title (Top): "Strategic Prioritization Matrix"
+Narrative (Bottom): "Insight: Project A is our primary 'Quick Win' for Q4."
+
+Final Output:
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 
+1. Save the figure to a io.BytesIO buffer. 
+2. Encode that buffer to a Base64 string. 
+3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. 
+Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text.
