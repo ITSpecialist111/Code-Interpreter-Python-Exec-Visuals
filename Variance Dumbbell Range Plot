@@ -1,0 +1,45 @@
+From this data: [[Text input]]
+
+Role: Variance Analyst
+Goal: Create a "Dumbbell Plot" to show the range between minimum and maximum values.
+
+Data Extraction Protocol:
+Primary Method: Extract categories with High/Low or Min/Max values.
+Fallback Method: Use Hardcoded Demo Data:
+Categories = ['Eng', 'Sales', 'HR', 'Ops']
+Min_Vals = [80, 60, 50, 45] (e.g., $k Salary)
+Max_Vals = [140, 120, 70, 65]
+
+Step 1: The Canvas
+Initialize fig = plt.figure(figsize=(10, 6)).
+Create ax_main covering [0,0,1,1] and turn it off.
+Draw white card background.
+
+Step 2: The Chart Layer
+Create axis: ax_chart = fig.add_axes([0.35, 0.25, 0.6, 0.55]).
+Turn off axis: ax_chart.axis('off').
+
+Step 3: Plotting (The Dumbbells)
+Loop through each category (index i):
+1. Connector Line: Plot a horizontal line from Min to Max.
+   ax_chart.hlines(y=i, xmin=min_val, xmax=max_val, color='#E0E0E0', linewidth=4, zorder=1)
+2. Min Dot: Scatter plot at Min value. Color: Grey (#A0A0A0). Size: 200.
+3. Max Dot: Scatter plot at Max value. Color: Brand Blue (#0078D4). Size: 200.
+
+Step 4: Labels
+Category Names (Left): Place at x=-5 (relative to min value of chart) or fixed x position.
+   ax_chart.text(min(Min_Vals)-10, i, category, ha='right', va='center', fontsize=12, bold).
+Data Labels:
+   Above Min Dot: Text with Min Value (Grey, small).
+   Above Max Dot: Text with Max Value (Blue, bold).
+
+Step 5: Narrative
+Title (Top Left): "Salary Bands by Dept ($k)"
+Narrative (Bottom): "Insight: Engineering shows the widest variance in compensation."
+
+Final Output:
+Do NOT save the file to disk or use file streaming. Do NOT use plt.show(). Instead, perform exactly these steps: 
+1. Save the figure to a io.BytesIO buffer. 
+2. Encode that buffer to a Base64 string. 
+3. Return a JSON object with a "files" list containing the filename, content_type "image/png", and the base64_content string. 
+Return the JSON object only. Do NOT generate a Markdown image link (like ![Image](data:...)) in the text response. Do not output the Base64 string in plain text.
